@@ -13,9 +13,12 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from decouple import config
 import dj_database_url
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+
 
 DATABASES = {
-    'default': dj_database_url.config(default=config('DATABASE_URL'))
+    'default': dj_database_url.config(default=config('DATABASE_URL')),
+    
 }
 
 
