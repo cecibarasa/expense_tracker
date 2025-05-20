@@ -24,6 +24,12 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 DATABASES = {
     'default': dj_database_url.config(default=config('DATABASE_URL')),
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': config('DB_NAME'),
+    'USER': config('DB_USER'),
+    'PASSWORD': config('DB_PASSWORD'),
+    'HOST': config('DB_HOST', default='localhost'),
+    'PORT': config('DB_PORT', default='5432'),
     
 }
 
@@ -104,11 +110,6 @@ WSGI_APPLICATION = 'expense.wsgi.application'
 DATABASES = {
     'default': {  # Add the 'default' key
         'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': 'expense',
-        # 'USER': 'nabalayo',
-        # 'PASSWORD': 'namaemba',
-        # 'HOST': 'localhost',
-        # 'PORT': '5432',
     }
 }
 
