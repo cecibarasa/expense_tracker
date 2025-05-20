@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container-fluid" id="reg1">
+    <div class="row d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        <!-- Add Budget Form Column -->
+        <div class="col-md-6 bg-transparent">
+            <div class="shadow p-4">
+                <h2 class="text-center mb-4">Add Budget</h2>
+                <form method="POST" action="{% url 'add_budget' %}">
+                    {% csrf_token %}
+                    <div class="form-group mb-3 bg-transparent">
+                        <label for="category">Category</label>
+                        <select class="form-control bg-transparent" id="category" name="category" required>
+                            <option value="Food">Food</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Transportation">Transportation</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-3 bg-transparent">
+                        <label for="budgeted_amount">Budgeted Amount</label>
+                        <input type="number" step="0.01" class="form-control bg-transparent" id="budgeted_amount" name="budgeted_amount" placeholder="Enter budgeted amount" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="currency">Currency</label>
+                        <select class="form-control bg-transparent" id="currency" name="currency" required>
+                            <option value="USD">USD</option>
+                            <option value="KES">KES</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="INR">INR</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Add Budget</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Image Column -->
+        <div class="col-md-5 d-none d-md-block">
+            <img src="{% static 'images/Selection (1).jpg' %}" alt="Add Budget" class="img-fluid" style="border-radius: 10px;">
+            <button class="btn btn-primary w-100" type="button" href="{% url 'view_expenses' %}">
+                <a href="{% url 'budget' %}">View Budget</a>
+            </button>
+        </div>
+        <!-- <button class="btn">
+            <a href="{% url 'budget' %}" class="btn btn-success">Add Budget</a>
+        </button> -->
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container-fluid" id="registration1">
+    <div class="card1">
+        <h2>Logout</h2>
+        <div class="alert alert-success" role="alert">
+            You have been logged out successfully.
+        </div>
+        <a href="{% url 'login' %}" class="btn ">Login Again</a>
+        </div>
+</div>
+{% endblock %}

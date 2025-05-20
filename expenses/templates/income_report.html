@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Income Report</h2>
+
+    <!-- Form to Select Month -->
+    <form method="POST" class="mb-4">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="col">
+                <label for="month">Select Month</label>
+                <select class="form-control" id="month" name="month" required>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+            </div>
+            <div class="col align-self-end">
+                <button type="submit" class="btn btn-primary mt-2">Filter</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Display Selected Month -->
+    {% if selected_month_name %}
+    <h3>Income for {{ selected_month_name }}</h3>
+    {% endif %}
+
+    <!-- Display Total Income -->
+    {% if total_income %}
+    <h4>Total Income: {{ total_income }}</h4>
+    {% endif %}
+
+    <!-- Display Income by Source -->
+    {% if income_by_source %}
+    <h5>Income by Source</h5>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Source</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for source in income_by_source %}
+            <tr>
+                <td>{{ source.source }}</td>
+                <td>{{ source.total_amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No income records found for the selected month.</p>
+    {% endif %}
+    <!-- Display All Income -->
+    {% if all_income %}
+    <h5>All Income</h5>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Source</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for income in all_income %}
+            <tr>
+                <td>{{ income.source }}</td>
+                <td>{{ income.amount }}</td>
+                <td>{{ income.date }}</td>
+                <td>{{ income.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No income records found for the selected month.
+    </div>
+    {% endif %}
+    <!-- Form to Add Income -->
+    {% if add_income %}
+    <h5>Add Income</h5>
+    <form method="POST" class="mb-4">
+        {% csrf_token %}
+        <input type="text" name="source" placeholder="Source" required>
+        <input type="number" name="amount" placeholder="Amount" required>
+        <input type="date" name="date" required>
+        <textarea name="description" placeholder="Description"></textarea>
+        <button type="submit" class="btn btn-primary">Add Income</button>
+    </form>
+    {% endif %}
+</div>
+
+{% endblock %}

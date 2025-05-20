@@ -1,0 +1,10 @@
+services:
+-type:web
+name:expense_tracker
+env:python
+startCommand:"gunicorn expense_tracker.wsgi"
+envVars:
+- key:DJANGO_SETTINGS_MODULE
+value:expense_tracker.settings
+- key:PYTHON_VERSION
+value:3.10

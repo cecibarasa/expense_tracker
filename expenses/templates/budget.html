@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container-fluid">
+    <!-- Display Budgets -->
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Budgets</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Budgeted Amount</th>
+                        <th>Actual Expenses</th>
+                        <th>Remaining</th>
+                        <th>Currency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for budget in budgets %}
+                    <tr>
+                        <td>{{ budget.category }}</td>
+                        <td>{{ budget.budgeted_amount }}</td>
+                        <td>{{ budget.actual_amount }}</td>
+                        <td>{{ budget.remaining_budget }}</td>
+                        <td>{{ budget.currency }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if budgets|length == 0 %}
+                    <tr>
+                        <td colspan="5" class="text-center">No budgets available.</td>
+                    </tr>
+                    {% endif %}
+                    {% if budgets|length > 0 %}
+                    <tr>
+                        <td>{{ budget.category }}</td>
+                        <td>{{ budget.budgeted_amount }}</td>
+                        <td>{{ budget.actual_amount }}</td>
+                        <td>{{ budget.remaining_budget }}</td>
+                        <td>{{ budget.currency }}</td>
+                    </tr>
+                    {% endif %}
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+</div>
+
+{% endblock %}

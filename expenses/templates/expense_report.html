@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="container">
+    <h2>Expense Report</h2>
+
+    <!-- Display Error Message -->
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- Form to Select Month and Year -->
+    <form method="POST" class="mb-4">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="col">
+                <label for="month">Month</label>
+                <select class="form-control" id="month" name="month" required>
+                    <option value="1" {% if selected_month == 1 %}selected{% endif %}>January</option>
+                    <option value="2" {% if selected_month == 2 %}selected{% endif %}>February</option>
+                    <option value="3" {% if selected_month == 3 %}selected{% endif %}>March</option>
+                    <option value="4" {% if selected_month == 4 %}selected{% endif %}>April</option>
+                    <option value="5" {% if selected_month == 5 %}selected{% endif %}>May</option>
+                    <option value="6" {% if selected_month == 6 %}selected{% endif %}>June</option>
+                    <option value="7" {% if selected_month == 7 %}selected{% endif %}>July</option>
+                    <option value="8" {% if selected_month == 8 %}selected{% endif %}>August</option>
+                    <option value="9" {% if selected_month == 9 %}selected{% endif %}>September</option>
+                    <option value="10" {% if selected_month == 10 %}selected{% endif %}>October</option>
+                    <option value="11" {% if selected_month == 11 %}selected{% endif %}>November</option>
+                    <option value="12" {% if selected_month == 12 %}selected{% endif %}>December</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="year">Year</label>
+                <input type="number" class="form-control" id="year" name="year" value="{{ selected_year }}" required>
+            </div>
+            <div class="col align-self-end">
+                <button type="submit" class="btn btn-primary mt-2">Generate Report</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Display Report -->
+    {% if expenses %}
+    <h3>Total Expenses: {{ total_expenses|intcomma }}</h3>
+    <h4>Selected Month: {{ selected_month_name }} {{ selected_year }}</h4>
+
+    <h5>Expenses by Category</h5>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in expenses_by_category %}
+            <tr>
+                <td>{{ category.category }}</td>
+                <td>{{ category.total_amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h5>All Expenses</h5>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in expenses %}
+            <tr>
+                <td>{{ expense.title }}</td>
+                <td>{{ expense.amount }}</td>
+                <td>{{ expense.date }}</td>
+                <td>{{ expense.category }}</td>
+                <td>{{ expense.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No expenses found for the selected month and year.
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

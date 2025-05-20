@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Search Expenses{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Search Expenses</h2>
+
+    <!-- Search Form -->
+    <form method="GET" action="{% url 'search_expenses' %}" class="mb-4">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="col">
+                <label for="start_date">Start Date</label>
+                <input type="date" class="form-control" id="start_date" name="start_date" required>
+            </div>
+            <div class="col">
+                <label for="end_date">End Date</label>
+                <input type="date" class="form-control" id="end_date" name="end_date" required>
+            </div>
+            <div class="col align-self-end">
+                <button type="submit" class="btn btn-primary mt-2">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Display Search Results -->
+    {% if expenses %}
+    <h3>Total Expenses: {{ total_expenses }}</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in expenses %}
+            <tr>
+                <td>{{ expense.title }}</td>
+                <td>{{ expense.amount|intcomma }}</td>
+                <td>{{ expense.date }}</td>
+                <td>{{ expense.category }}</td>
+                <td>{{ expense.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No expenses found for the selected date range.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

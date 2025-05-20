@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load humanize %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h2>User Profile</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">User Information</h5>
+            <p class="card-text"><strong>Username:</strong> {{ user.username }}</p>
+            <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+            <p class="card-text"><strong>First Name:</strong> {{ user.first_name }}</p>
+            <p class="card-text"><strong>Last Name:</strong> {{ user.last_name }}</p>
+            <p class="card-text"><strong>Date Joined:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+            <p class="card-text"><strong>Profile Picture:</strong> <img src="{{ user.profile.picture.url }}" alt="Profile Picture" /></p>
+            <p class="card-text"><strong>Bio:</strong> {{ user.profile.bio }}</p>
+        </div>
+        
+    <!-- > -->
+</div>
+{% endblock %}

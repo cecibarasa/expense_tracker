@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% load tz %}
+
+{% block content %}
+
+<div class="container-fluid expense-container">
+    <h2>All Expenses in {% now "Y" %}</h2>
+
+    <!-- Display Expenses in a Table -->
+    <table class="table ">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in expenses %}
+            <tr>
+                <td>{{ expense.title }}</td>
+                <td>{{ expense.amount|intcomma }}</td>
+                <td>{{ expense.date }}</td>
+                <td>{{ expense.category }}</td>
+                <td>{{ expense.description }}</td>
+                <td>{{ expense.status }}</td>
+            {% if expense.status == 'Pending' %}
+            <td>
+                <form method="POST" action="{% url 'approve_expense' expense.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Approve</button>
+                </form>
+            </td>
+            
+            {% endif %}
+
+            </tr>
+            {% endfor %}
+            <!-- Display Total Expenses at the end of the table -->
+
+            {% if expenses %}
+            <tr>
+                <td colspan="5" class="text-right"><strong>Total:</strong></td>
+                <td><strong>{{ total_expenses|intcomma }}</strong></td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <!-- If no expenses are found -->
+    {% if not expenses %}
+    <div class="alert alert-info" role="alert">
+        No expenses found.
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
