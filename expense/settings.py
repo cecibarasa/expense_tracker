@@ -14,6 +14,9 @@ import os
 from decouple import config
 import dj_database_url
 
+MODE = config("MODE", default="dev")
+DEBUG = config('DEBUG', default=False, cast=bool)
+
 if config('MODE')=="prod":
     DATABASES = {
        'default': {
@@ -22,7 +25,7 @@ if config('MODE')=="prod":
            'USER': config('DB_USER'),
            'PASSWORD': config('DB_PASSWORD'),
            'HOST': config('DB_HOST'),
-           'PORT': '',
+           'PORT': '5432',
        }
        
    }
