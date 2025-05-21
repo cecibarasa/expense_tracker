@@ -22,18 +22,6 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 
-DATABASES = {
-    'default': dj_database_url.config(default=config('DATABASE_URL')),
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': config('DB_NAME'),
-    'USER': config('DB_USER'),
-    'PASSWORD': config('DB_PASSWORD'),
-    'HOST': config('DB_HOST', default='localhost'),
-    'PORT': config('DB_PORT', default='5432'),
-    
-}
-
-
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
@@ -108,9 +96,14 @@ WSGI_APPLICATION = 'expense.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {  # Add the 'default' key
-        'ENGINE': 'django.db.backends.postgresql',
-    }
+    'default': dj_database_url.config(default=config('DATABASE_URL')),
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': config('DB_NAME'),
+    'USER': config('DB_USER'),
+    'PASSWORD': config('DB_PASSWORD'),
+    'HOST': config('DB_HOST', default='localhost'),
+    'PORT': config('DB_PORT', default='5432'),
+    
 }
 
 
