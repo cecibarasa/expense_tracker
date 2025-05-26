@@ -106,16 +106,16 @@ WSGI_APPLICATION = 'expense.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {  # Add the 'default' key
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'expense',
-        'USER': 'nabalayo',
-        'PASSWORD': 'namaemba',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {  # Add the 'default' key
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'expense',
+#         'USER': 'nabalayo',
+#         'PASSWORD': 'namaemba',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
