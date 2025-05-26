@@ -22,8 +22,14 @@ import random
 import string
 from django.core.mail import send_mail
 from decimal import Decimal
+from django.http import HttpResponse
+from django.core.management import call_command
 
 
+
+def run_migrations(request):
+    call_command('migrate')
+    return HttpResponse("Migrations applied.")
 
 
 def generate_random_password(length=12):
