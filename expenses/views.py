@@ -28,6 +28,20 @@ from django.core.management import call_command
 from django.http import HttpResponse
 import os
 
+def create_admin(request):
+    User = get_user_model()
+    username = os.environ.get('DJANGO_SUPERUSER_USERNAME')
+    email = os.environ.get('DJANGO_SUPERUSER_EMAIL')
+    password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
+
+    if not (username and email and password):
+        return HttpResponse("Superuser credentials not set in environment variables.", status=400)
+
+    if not User.objects.filter(username=username).exists():
+        User.objects.create_superuser(username, email, password)
+        return HttpResponse("Superuser created.")
+    return HttpResponse("Superuser already exists.")
+
 def run_migrations(request):
     call_command('migrate')
     return HttpResponse("Migrations applied.")
