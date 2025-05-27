@@ -10,7 +10,8 @@ from datetime import datetime
 import random
 import json
 from django.http import JsonResponse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User # Import User model
+from django.contrib.auth import get_user_model 
 from decimal import Decimal
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import authenticate, login as auth_login
@@ -24,8 +25,18 @@ from django.core.mail import send_mail
 from decimal import Decimal
 from django.http import HttpResponse
 from django.core.management import call_command
+import os
 
 
+def create_admin(request):
+    User = get_user_model()
+    username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'nabalayo')
+    password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'namaemba')
+
+    if not User.objects.filter(username=username).exists():
+        User.objects.create_superuser(username, password)
+        return HttpResponse("Superuser created.")
+    return HttpResponse("Superuser already exists.")
 
 def run_migrations(request):
     call_command('migrate')

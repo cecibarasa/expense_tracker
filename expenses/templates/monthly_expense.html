@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
-{{ block.super}}
+{% load static %}
+<!-- {{ block.super}} -->
 {% load humanize %}
 {% block content %}
 
-<div class="container-fluid d-flex justify-content-center">
+<div class="container-fluid justify-content-center">
     <h2>Monthly Expense Report</h2>
 
     <!-- Form to Select Month -->
@@ -50,8 +51,7 @@
 </div>
 
 <!-- Include Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script><script>
     const ctx = document.getElementById('monthlyExpenseChart').getContext('2d');
 
     // Parse data passed from the view
@@ -62,6 +62,14 @@
     const categoryColors = [
         { background: 'rgba(255, 99, 132, 1)', border: 'rgba(255, 99, 132, 1)' }, // Red
         { background: 'rgba(54, 162, 235, 1)', border: 'rgba(54, 162, 235, 1)' }, // Blue
+        { background: 'rgba(255, 206, 86, 1)', border: 'rgba(255, 206, 86, 1)' }, // Yellow
+        { background: 'rgba(75, 192, 192, 1)', border: 'rgba(75, 192, 192, 1)' }, // Teal
+        { background: 'rgba(153, 102, 255, 1)', border: 'rgba(153, 102, 255, 1)' }, // Purple
+        { background: 'rgba(255, 159, 64, 1)', border: 'rgba(255, 159, 64, 1)' }, // Orange
+        { background: 'rgba(201, 203, 207, 1)', border: 'rgba(201, 203, 207, 1)' }, // Grey
+        { background: 'rgba(255, 99, 132, 0.2)', border: 'rgba(255, 99, 132, 0.2)' }, // Light Red
+        { background: 'rgba(54, 162, 235, 0.2)', border: 'rgba(54, 162, 235, 0.2)' }, // Light Blue
+        { background: 'rgba(255, 206, 86, 0.2)', border: 'rgba(255, 206,86 ,0.2)' }, // Light Yellow
         { background: 'rgba(255, 206, 86, 1)', border: 'rgba(255, 206, 86, 1)' }, // Yellow
         { background: 'rgba(75, 192, 192, 1)', border: 'rgba(75, 192, 192, 1)' }, // Teal
         { background: 'rgba(153, 102, 255, 1)', border: 'rgba(153, 102, 255, 1)' }, // Purple
@@ -78,7 +86,7 @@
     }];
 
     const monthlyExpenseChart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar', // Change to 'bar' for bar chart
         data: {
             labels: Object.keys(categoryData), // Category names
             datasets: datasets
