@@ -31,10 +31,11 @@ import os
 def create_admin(request):
     User = get_user_model()
     username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'nabalayo')
+    email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'cecibarasa@gmail.com')
     password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'namaemba')
 
     if not User.objects.filter(username=username).exists():
-        User.objects.create_superuser(username, password)
+        User.objects.create_superuser(username, email, password)
         return HttpResponse("Superuser created.")
     return HttpResponse("Superuser already exists.")
 
