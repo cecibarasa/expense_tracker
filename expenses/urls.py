@@ -48,7 +48,6 @@ urlpatterns = [
         extra_context={'hide_navbar': True}
     ), name='password_reset_complete'),
     path('run-migrations/', views.run_migrations),
-    path('create-admin/', views.create_admin),
     # path('delete_expense/<int:expense_id>/', views.delete_expense, name='delete_expense'),
 #     path('profile/', views.profile, name='profile'),
 #     path('settings/', views.settings, name='settings'),
