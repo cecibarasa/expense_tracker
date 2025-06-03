@@ -47,14 +47,6 @@
                 </div>
                 {% endif %}
 
-                {% if budgets|length == 0 %}
-                    <div class="card">
-                        <p colspan="5" class="card-text">No budgets available.</p>
-                        <button class="btn btn-primary" onclick="location.href='{% url 'add_budget' %}'">Add Budget</button>
-                    </div>
-                    {% endif %}
-                
-                
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#expenseSlider" data-bs-slide="prev">
                 <span class="visually-hidden">Previous</span>
