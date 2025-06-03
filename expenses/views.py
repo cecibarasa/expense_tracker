@@ -207,27 +207,37 @@ def index(request):
             budget.save()
     
     # Fetch monthly expenses grouped by title
-    today = now().date()
-    selected_month = now().date().month
-    selected_month_name = today.strftime('%B')
-    selected_year = today.year
+    today = timezone.now().date()
+    current_month = today.month
+    current_year = today.year
+
+    # Filter budgets for the current month
+    monthly_budgets = Budget.objects.filter(
+        user=request.user,
+        # created_at__month=current_month,
+        # created_at__year=current_year
+    )
     
     # Fetch expenses for the selected month
-    monthly_expenses = (
-        ExpenseManagement.objects.filter(user=request.user, date__month=selected_month)
-        .annotate(month=ExtractMonth('date'))
-        .values('title')
-        .annotate(total_amount=Sum('amount'))
-        .order_by('title')
+    monthly_expenses = ExpenseManagement.objects.filter(
+        user=request.user,
+        date__month=current_month,
+        date__year=current_year
     )
+    total_expenses = monthly_expenses.aggregate(Sum('amount'))['amount__sum'] or 0
 
     # Debugging output
     # print(f"Selected Month: {selected_month}")
     # print(f"Monthly Expenses: {monthly_expenses}")
 
     # Prepare data for the bar graph
-    categories = list(set(expense['title'] for expense in monthly_expenses))  # Unique categories
-    category_data = {category: 0 for category in categories}  # Initialize data for each category
+    expenses_by_category = (
+        monthly_expenses.values('category')
+        .annotate(total_amount=Sum('amount'))
+        .order_by('category')
+    )
+    categories = [e['category'] for e in expenses_by_category]
+    category_data = [float(e['total_amount']) for e in expenses_by_category]
 
     # Calculate total amount for each category
     total_amount = 0
@@ -255,15 +265,17 @@ def index(request):
     return render(request, 'index.html', {
         'current_expense': current_expense,
         'has_expenses_today': has_expenses_today,
-        'selected_month_name': selected_month_name,
-        'categories': json.dumps(categories),  # Serialize categories
-        'category_data': json.dumps(category_data),  # Serialize category data
-        'category_colors': json.dumps(category_colors),  # Serialize category colors
+        'selected_month_name': today.strftime('%B'),
+        'total_expenses': total_expenses,
+        'categories': json.dumps(categories),
+        'category_data': json.dumps(category_data),
+        'category_colors': json.dumps(category_colors),
         'monthly_expenses': monthly_expenses,
         'total_expenses': total_expenses,
         'total_income': total_income,
         'net_savings': net_savings,
-        'budgets': budgets,
+        'budgets': monthly_budgets,
+        # 'budgets': budgets,
         'income': income,
     })
 

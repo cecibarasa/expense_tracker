@@ -8,34 +8,11 @@
     
     <!-- Display Current Expense -->
     <div class="row d-flex justify-content-center">
-        <!-- <div class="col-md-4">
-            <div id="budget">
-                {% for budget in budgets %}
-                <div class="carousel-item {% if forloop.first %}active{% endif %}">
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Budget for {{ budget.category }}</h5>
-                    <p class="card-text">Budgeted Amount: {{ budget.budgeted_amount }}</p>
-                    <p class="card-text">Actual Amount: {{ budget.actual_amount }}</p>
-                    <p class="card-text">Remaining Budget: {{ budget.remaining_budget }}</p>
-                    {% if budget.remaining_budget < 0 %}
-                    <p class="card-text text-danger">You have exceeded your budget for {{ budget.category }}!</p>
-                    {% endif %}
-                    {% if budget.remaining_budget > 0 %}
-                    <p class="card-text text-success">You are within your budget for {{ budget.category }}.</p>
-                    {% endif %}
-                    {% if budget.remaining_budget == 0 %}
-                    <p class="card-text text-warning">You have used your entire budget for {{ budget.category }}.</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div> -->
-        <!-- {% endfor %} -->
         <div class="col-md-4 ">
         <div id="expenseSlider" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-                
+                {% if budgets > 0 %}
+                    <h3>Budget for {{ selected_month_name }}</h3>
                 {% for budget in budgets %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
                     <div class="card">
@@ -58,10 +35,22 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% else %}
+                <div class="carousel-item active">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">No Budget Set For  {{ selected_month_name }}</h4>
+                            <p class="card-text">Please set a budget to track your expenses.</p>
+                            <button class="btn btn-primary" onclick="location.href='{% url 'add_budget' %}'">Add Budget</button>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
                 {% if budgets|length == 0 %}
                     <div class="card">
                         <p colspan="5" class="card-text">No budgets available.</p>
-                        <button class="btn btn-primary" onclick="location.href='{% url 'budget' %}'">Add Budget</button>
+                        <button class="btn btn-primary" onclick="location.href='{% url 'add_budget' %}'">Add Budget</button>
                     </div>
                     {% endif %}
                 
@@ -93,7 +82,10 @@
         
         <div class="col-md-4">
             <div class="card">
-                
+                {% if income > 0 %}
+                <div class="card-header">
+                    <h3>Current Income {{ selected_month_name }} Income</h3>
+                </div>
                 <div class="card-body">
                     {% for income in income %}
                     {% if selected_month_name %}
@@ -105,15 +97,18 @@
                     {% endfor %}
                     {% if income|length == 0 %}
                     <p colspan="5" class="card-text">No income available.</p>
-                    <button class="btn btn-primary" onclick="location.href='{% url 'income' %}'">Add Income</button>
+                    <button class="btn btn-primary" onclick="location.href='{% url "income" %}'">Add Income</button>
                     {% endif %}
+                </div>
+                {% else %}
+                <div class="card-header">
+                    <h4>No Income Recorded for {{ selected_month_name }}</h4>
+                    <p>Please add your income details to track your finances.</p>
+                    <button class="btn btn-primary" onclick="location.href='{% url "income" %}'">Add Income</button>
                 </div>
             </div>
         </div>
-        
-        
-        
-        
+        {% endif %}
     </div>
     <!-- Display Monthly Report -->
     <div class="row d-flex justify-content-center">

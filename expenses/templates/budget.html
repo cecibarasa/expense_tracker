@@ -1,12 +1,18 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Budget Tracker{% endblock %}
+
+
 {% block content %}
 
-<div class="container-fluid">
+<div class="container-fluid" id="budget">
     <!-- Display Budgets -->
-    <div class="row">
+    <div class="row budget_table">
         <div class="col-md-12">
-            <h3>Budgets</h3>
-            <table class="table table-bordered">
+            <h2>Budgets</h2>
+            <table class="table table-responsive">
                 <thead>
                     <tr>
                         <th>Category</th>
@@ -20,9 +26,9 @@
                     {% for budget in budgets %}
                     <tr>
                         <td>{{ budget.category }}</td>
-                        <td>{{ budget.budgeted_amount }}</td>
-                        <td>{{ budget.actual_amount }}</td>
-                        <td>{{ budget.remaining_budget }}</td>
+                        <td>{{ budget.budgeted_amount|intcomma }}</td>
+                        <td>{{ budget.actual_amount|intcomma }}</td>
+                        <td>{{ budget.remaining_budget|intcomma }}</td>
                         <td>{{ budget.currency }}</td>
                     </tr>
                     {% endfor %}

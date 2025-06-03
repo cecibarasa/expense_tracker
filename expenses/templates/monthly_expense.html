@@ -92,22 +92,39 @@
             datasets: datasets
         },
         options: {
-            responsive: false,
-            plugins: {
-                legend: {
-                    position: 'center',
-                },
-                title: {
-                    display: true,
-                    text: 'Expenses by Title'
+        responsive: false,
+        plugins: {
+            legend: {
+                position: 'center',
+            },
+            title: {
+                display: true,
+                text: 'Expenses by Title',
+                color: '#f9f9f9', // <-- Add your desired color here (e.g., orange)
+                font: {
+                    size: 20 // Optional: change title font size
                 }
             },
-            scales: {
-                y: {
-                    beginAtZero: true
+            datalabels: {
+                color: '#f9f9f9', // <-- Set your number color here
+                anchor: 'end',
+                align: 'top',
+                font: {
+                    weight: 'bold',
+                    size: 14
                 }
             }
+        },
+        animation: {
+            duration: 1000, // Animation duration in milliseconds
+            easing: 'easeInOutBounce' // Easing function for the animation
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
         }
+    }
     });
 </script>
 

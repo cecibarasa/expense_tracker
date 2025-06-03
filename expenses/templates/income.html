@@ -6,7 +6,7 @@
     <div class="row d-flex align-items-center justify-content-center" style="min-height: 100vh;">
         <div class="col-md-4 bg-transparent">
             <div class="shadow p-4">
-                <h2>Income</h2>
+                <h2>Add Income</h2>
             <form method="POST" action="{% url 'income' %}">
                 {% csrf_token %}
                 <div class="form-group">
@@ -44,34 +44,47 @@
             </div>
         </div>
         <div class="col-md-6">
-            <h3 class="mt-4">Income List</h3>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Category</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for income in income %}
-                        <tr>
-                            <td>{{ income.amount|intcomma }}</td>
-                            <td>{{ income.date }}</td>
-                            <td>{{ income.source }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-                {% if income %}
-                <tfoot>
-                    <tr>
-                        <td colspan="2" class="text-right"><strong>Total:</strong></td>
-                        <td>{{ total_income|intcomma }}</td>
-                    </tr>
-                </tfoot>
-                {% endif %}
-            </table>
+            {% if income > 0%}
+            <div class="card bg-transparent">
+                <div class="card-body">
+                    <!-- Add this inside your <div class="card-body">, replacing the Total Income display -->
+                    <h3 class="card-title">Total Income: <span id="totalIncomeValue">{{ total_income|intcomma }}</span></h3>
+                    <input type="range" min="0" max="{{ total_income|floatformat:0 }}" value="{{ total_income|floatformat:0 }}" class="form-range w-100" id="totalIncomeSlider" disabled>
+                    
+                </div>
+            </div>
+            {% else %}
+            <div class="card bg-transparent">
+                <div class="card-body">
+                    <h3 class="card-title"> No income recorded</h3>
+                    <p>Please add your income details to track your finances.</p>
+                </div>
+            </div>
+            {% endif %}
         </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Optionally, animate the slider if you want to show a dynamic effect
+    const slider = document.getElementById('totalIncomeSlider');
+    const valueSpan = document.getElementById('totalIncomeValue');
+    const max = parseInt(slider.max);
+    let current = 0;
+    if (slider && valueSpan) {
+        const interval = setInterval(() => {
+            if (current < max) {
+                current += Math.ceil(max / 100); // Reduce speed: increase denominator
+                if (current > max) current = max;
+                slider.value = current;
+                valueSpan.textContent = current.toLocaleString();
+            } else {
+                clearInterval(interval);
+            }
+        }, 20); // Increase interval time for slower animation
+    }
+});
+</script>
+
     </div>
 </div>
 {% endblock %}

@@ -98,6 +98,7 @@ class Budget(models.Model):
     currency = models.CharField(max_length=10)
     half_alert_sent = models.BooleanField(default=False) # alert showing if the user has finished 50%
     alert_sent = models.BooleanField(default=False)  # New field to track email alert status
+    date_created = models.DateField(auto_now_add=True)
     
     def __str__(self):
         return f"{self.category} - {self.budgeted_amount} {self.currency}"

@@ -33,6 +33,7 @@ div a:hover {
     top: 0;
     left: 0;
     z-index: 1050;
+    width: 100%;
 }
 
 .navbar a {
@@ -51,12 +52,14 @@ div a:hover {
 }
 
 .navbar-toggler {
-    background-color:#1E293B;
+    background-color:  #334155!important;
     border: none;
-    color: #000;
-    padding: 10px 20px;
+    color: #f9f9f9 !important;
     font-weight: 600;
     border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, color 0.3s;
+    /* display: flex; */
 }
 .navbar-toggler:hover {
     background-color: #ffffff;
@@ -74,11 +77,41 @@ div a:hover {
     border-radius: 5px;
 }
 
+.navbar-toggler-icon {
+    width: 30px;
+    height: 30px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    position: relative;
+}
+
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background-color: #1E293B;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.navbar-toggler-icon::before {
+    transform: translateY(-6px);
+}
+.navbar-toggler-icon::after {
+    transform: translateY(6px);
+}
+
 .navbar-collapse {
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: #1E293B;
+}
+
+.navbar-collapse.show {
+    max-height: 500px; /* Adjust as needed for your menu size */
 }
 
 .navbar-collapse ul {
@@ -152,141 +185,6 @@ span {
     margin-bottom: 20px;
 }
 
-#add_expense {
-    background: #1a1a1a;
-    padding: 2.5rem;
-    border-radius: 15px;
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
-    color: #F1F5F9;
-}
-
-#add_expense .form-group {
-    position: relative;
-    margin: 2rem 0;
-}
-
-#add_expense input {
-    width: 100%;
-    padding: 0.8rem;
-    border: none;
-    border-bottom: 2px solid #444;
-    background: transparent;
-    color: white;
-    outline: none;
-}
-
-#add_expense label {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #888;
-    transition: 0.3s;
-    pointer-events: none;
-}
-
-#add_expense input:focus ~ label,
-#add_expense input:valid ~ label {
-    top: -10px;
-    font-size: 0.8rem;
-    color: #8B5CF6;
-}
-
-#add_expense input:focus {
-    border-bottom-color: #8B5CF6;
-}
-
-#add_expense button {
-    width: 100%;
-    padding: 1rem;
-    background: #8B5CF6;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    margin-top: 2rem;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-}
-
-#add_expense button::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255,255,255,0.2);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-}
-
-#add_expense-form button:hover::after {
-    width: 300px;
-    height: 300px;
-}
-
-
-#add {
-    color: #fff;
-    width: 100%;
-    max-height: 100vh;
-    margin: auto; /* Center horizontally */
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    justify-content: center;
-    /* border: solid #000 1px; */
-    border-radius: 5px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Center vertically and horizontally */
-    background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
-}
-
-#expense-form .card {
-    width: 100%;
-    max-width: 500px;
-    /* padding: 20px; */
-    color: #000;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-#add_expense .btn{
-    width: 60%;
-	height: 40px;
-	margin: 10px auto;
-	justify-content: center;
-	display: block;
-	color: #fff;
-	background: #573b8a;
-	font-size: 1em;
-	font-weight: bold;
-	margin-top: 30px;
-	outline: none;
-	border: none;
-	border-radius: 5px;
-	transition: .2s ease-in;
-	cursor: pointer;
-}
-
-.content{
-    margin: 8%;
-    /* background-color: #fff; */
-    padding: 4rem 1rem 4rem 1rem;
-    box-shadow: 0 0 5px 5px rgba(0,0,0, .05);
-}
-
-.content img {
-    width: 80%;
-}
 .signin-text{
     font-style: normal;
     font-weight: 600 !important;
@@ -309,6 +207,37 @@ span {
     background-clip: padding-box;
 }
  
+.form-control.bg-transparent,
+.form-control.bg-transparent option {
+    background-color: #334155 !important; /* Dropdown background */
+    border-radius: 5px;
+    border: 1px solid #14B8A6;
+    font-size: 1rem;
+    padding-left: 10px !important; /* Padding for dropdown */
+    color: #f1f5f9 !important; /* Text color */
+    /* font-weight: 300; */
+}
+
+.form-control.bg-transparent option {
+    padding: 20px !important; /* Padding for options */
+    background: transparent;
+    color: #f1f5f9 !important; /* Text color for options */
+}
+
+.form-control.bg-transparent option:hover {
+    background-color: #1E293B !important; /* Highlight color on hover */
+    color: #fff !important;               /* Text color on hover */
+
+}
+
+.form-control.bg-transparent input {
+    background-color: #334155 !important; /* Input background */
+    color: #f1f5f9 !important;           /* Input text color */
+    border-radius: 5px;
+    border: 1px solid #14B8A6;
+    font-size: 1rem;
+    /* font-weight: 300; */
+}
  
 .form-control:focus{
     color: #495057;
@@ -334,8 +263,9 @@ span.emoji {
 
 .expense-container {
     width: 100%;
+    height: 100vh;
     border-collapse: collapse;
-    margin: 20px 20px 0 20px;
+    /* margin: 20px 20px 0 20px; */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     overflow: hidden;
@@ -347,28 +277,175 @@ span.emoji {
 
 .expense-container h2 {
     text-align: center;
+    color: #F1F5F9;
+}
+
+/* budget */
+#budget {
+    height: 100vh;
+    text-align: center;
+}
+
+.budget_table {
+    width: 70%;
+    color: white;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+    transform: translate(20%, 20%);
+}
+
+.expense_table {
+    width: 70% !important;
+    color: white;
+    padding: 20px !important;
+    transform: translate(20%, 0%);
 }
 
 /*table*/
 table {
-    width: 100%;
+    width: 70%;
     border-collapse: collapse;
     margin: 20px 0;
-    background-color: #334155;
+    background: transparent;
+    color: white !important;
+    font-size: 1.2em;
+    border-radius: 5px;
+    overflow: hidden;
+    /* Optional: Add a subtle shadow for depth */
+    padding: 50px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+table,
+table th,
+table td,
+table tr {
+    color: #fff !important;
+}
+
+#table{
+    color: #e0e0e0;
+    top: 20px;
+    left: 20px;
+    position: relative;
+    width: 70%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: transparent;
+    font-size: 1.2em;
+    border-radius: 5px;
+    overflow: hidden;
 }
 
 /* Highlight alternate rows */
 table tr:nth-child(odd) {
-    background-color: #f9f9f9; /* Light gray for odd rows */
+    background: transparent;
+    color: white !important;
+    /* background-color: #f9f9f9; Light gray for odd rows */
 }
 
 table tr:nth-child(even) {
-    background-color: #e0e0e0; /* Slightly darker gray for even rows */
+    background: transparent;
+    color: #e0e0e0;
+    /* background-color: #e0e0e0; Slightly darker gray for even rows */
 }
 
 /* Optional: Add hover effect for rows */
-table tr:hover {
-    background-color: #d1d1d1; /* Highlight color on hover */
+table tr:hover,
+table tr:hover td,
+table tr:hover th {
+    background-color: #14B8A6 !important; /* Teal highlight on hover */
+    color: #000 !important;               /* White text on hover */
+    transition: background 0.2s;
+}
+/* Style the table header */
+table th {
+    background-color: #1E293B; /* Dark background for header */
+    color: #F1F5F9;             /* Light text color for header */
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+}
+
+/* Responsive styles for the budget page */
+@media (max-width: 1200px) {
+    .budget_table,
+    .expense_table,
+    #table {
+        width: 90% !important;
+        font-size: 1em;
+        padding: 10px !important;
+        transform: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .budget_table,
+    .expense_table,
+    #table {
+        width: 100% !important;
+        font-size: 0.95em;
+        padding: 5px !important;
+        margin: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .budget_table,
+    .expense_table,
+    #table,
+    table {
+        width: 100% !important;
+        font-size: 0.85em;
+        padding: 2px !important;
+        margin: 0;
+        box-shadow: none;
+    }
+    .budget_table th,
+    .budget_table td,
+    .expense_table th,
+    .expense_table td,
+    #table th,
+    #table td,
+    table th,
+    table td {
+        padding: 6px 4px !important;
+        font-size: 0.9em;
+        word-break: break-word;
+    }
+    .budget_table {
+        transform: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .budget_table,
+    .expense_table,
+    #table,
+    table {
+        font-size: 0.75em;
+    }
+    .budget_table th,
+    .budget_table td,
+    .expense_table th,
+    .expense_table td,
+    #table th,
+    #table td,
+    table th,
+    table td {
+        padding: 4px 2px !important;
+    }
+}
+
+/* Ensure horizontal scrolling for tables on very small screens */
+.budget_table,
+.expense_table,
+#table,
+table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* login & signup */
@@ -398,7 +475,7 @@ table tr:hover {
     max-width: 100%;
     max-height: 100vh;
     margin: auto; /* Center horizontally */
-    display: flex;
+    /* display: flex; */
     flex-direction: column;
     align-items: left;
     justify-content: center;
@@ -429,10 +506,9 @@ table tr:hover {
 }
 
 #register .form-group input {
-    
 	background: #e0dede;
 	justify-content: center;
-	display: flex;
+	/* display: flex; */
 	padding: 12px;
 	border: none;
 	outline: none;
@@ -455,22 +531,6 @@ table tr:hover {
 	border-radius: 5px;
 	transition: .2s ease-in;
 	cursor: pointer;
-}
-
-#dont {
-    color: #573b8a;
-	transform: scale(.6);
-
-}
-
-#chk:checked ~ .login{
-	transform: translateY(-500px);
-}
-#chk:checked ~ .login label{
-	transform: scale(1);	
-}
-#chk:checked ~ .signup label{
-	transform: scale(.6);
 }
 
 /* logout */
@@ -534,12 +594,43 @@ table tr:hover {
     align-items: center;
     justify-content: center;
     background-color: #14B8A6;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+@media (max-width: 600px) {
+    #monthly {
+        padding: 10px;
+        height: auto;
+    }
+}
+
+#monthly h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+#monthly p {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+#monthlyExpenseChartContainer {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #334155;
+    padding: 20px;
 }
 
 #monthlyExpenseChart{
     color: #F1F5F9;
-    width: 70%;
+    width: 100%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 100vh;
 }
 /* Style the dropdown container */
 
@@ -759,4 +850,35 @@ select {
 
 .flip-link {
     cursor: pointer;
+}
+
+/* Style the slider track and thumb */
+#totalIncomeSlider::-webkit-slider-thumb {
+    background: #14B8A6; /* Thumb color (teal) */
+    border: 2px solid #fff;
+}
+#totalIncomeSlider::-webkit-slider-runnable-track {
+    background: linear-gradient(90deg, #36a2eb, #ff9800); /* Track gradient */
+    height: 8px;
+    border-radius: 4px;
+}
+#totalIncomeSlider {
+    accent-color: #14B8A6; /* For modern browsers */
+}
+/* For Firefox */
+#totalIncomeSlider::-moz-range-thumb {
+    background: #14B8A6;
+    border: 2px solid #fff;
+}
+#totalIncomeSlider::-moz-range-track {
+    background: linear-gradient(90deg, #36a2eb, #14B8A6);
+    height: 8px;
+    border-radius: 4px;
+}
+/* For IE */
+#totalIncomeSlider::-ms-fill-lower {
+    background: #36a2eb;
+}
+#totalIncomeSlider::-ms-fill-upper {
+    background: #14B8A6;
 }

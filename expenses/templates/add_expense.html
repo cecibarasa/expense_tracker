@@ -37,11 +37,11 @@
             </div>
         </div>
 
-        <!-- Image Column -->
-        <div class="col-md-5 d-none d-md-block">
+        <!-- Image Column (hidden on small screens) -->
+        <div class="col-md-5 ">
             <img src="{% static 'images/Selection (1).jpg' %}" alt="Add Expense" class="img-fluid" style="border-radius: 10px;">
-            <button class="btn btn-primary w-100" type="button" href="{% url 'view_expenses' %}">
-                <a href="{% url 'view_expenses' %}">View Expenses</a>
+            <button class="btn btn-primary w-100 mt-3" onclick="location.href='{% url 'view_expenses' %}'" type="button">
+                <i class="fas fa-eye"></i> View Expenses
             </button>
         </div>
     </div>
