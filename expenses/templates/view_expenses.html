@@ -5,59 +5,28 @@
 
 {% block content %}
 
-<div class="container-fluid expense-container">
-    <h2>All Expenses in {% now "Y" %}</h2>
-
-    <!-- Display Expenses in a Table -->
-    <table class="table expense_table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Category</th>
-                <th>Description</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for expense in expenses %}
-            <tr>
-                <td>{{ expense.title }}</td>
-                <td>{{ expense.amount|intcomma }}</td>
-                <td>{{ expense.date }}</td>
-                <td>{{ expense.category }}</td>
-                <td>{{ expense.description }}</td>
-                <td>{{ expense.status }}</td>
-            {% if expense.status == 'Pending' %}
-            <td>
-                <form method="POST" action="{% url 'approve_expense' expense.id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-success">Approve</button>
-                </form>
-            </td>
-            
-            {% endif %}
-
-            </tr>
-            {% endfor %}
-            <!-- Display Total Expenses at the end of the table -->
-
-            {% if expenses %}
-            <tr>
-                <td colspan="5" class="text-right"><strong>Total:</strong></td>
-                <td><strong>{{ total_expenses|intcomma }}</strong></td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
-
-    <!-- If no expenses are found -->
-    {% if not expenses %}
-    <div class="alert alert-info" role="alert">
-        No expenses found.
+<div class="container-fluid">
+    <div class="row d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="col-md-5 bg-transparent">
+            <div class="shadow p-4">
+                <img src="{% static 'images/Selection (1).jpg' %}" alt="Expenses" class="img-fluid">
+            </div>
+        </div>
+    <div class="col-md-6">        
+            <div class="shadow p-4">
+                {% if expense %}
+                    <h2>Monthly Expenses for {{ current_month_name }}</h2>
+                    <p>Total Expenses: <span>{{ total_expenses|intcomma }}</span></p>
+                    <p>Average Weekly Expense: <span>{{ average_expense_per_week|intcomma }}</span></p>
+                    <p>Highest Expense: <span>{{ highest_expense.amount|intcomma }} on {{ highest_expense.title }}</span></p>
+                    <p>Lowest Expense: <span>{{ lowest_expense.amount|intcomma }} on {{ lowest_expense.title }}</span></p>
+                {% else %}
+                    <h2>No Expenses Recorded</h2>
+                    <p>Please add your expenses to see the statistics.</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    {% endif %}
 </div>
 
 {% endblock %}

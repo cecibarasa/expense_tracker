@@ -7,51 +7,58 @@
 
 {% block content %}
 
-<div class="container-fluid" id="budget">
-    <!-- Display Budgets -->
-    <div class="row budget_table">
-        <div class="col-md-12">
-            <h2>Budgets</h2>
-            <table class="table table-responsive">
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Budgeted Amount</th>
-                        <th>Actual Expenses</th>
-                        <th>Remaining</th>
-                        <th>Currency</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for budget in budgets %}
-                    <tr>
-                        <td>{{ budget.category }}</td>
-                        <td>{{ budget.budgeted_amount|intcomma }}</td>
-                        <td>{{ budget.actual_amount|intcomma }}</td>
-                        <td>{{ budget.remaining_budget|intcomma }}</td>
-                        <td>{{ budget.currency }}</td>
-                    </tr>
-                    {% endfor %}
-                    {% if budgets|length == 0 %}
-                    <tr>
-                        <td colspan="5" class="text-center">No budgets available.</td>
-                    </tr>
-                    {% endif %}
-                    {% if budgets|length > 0 %}
-                    <tr>
-                        <td>{{ budget.category }}</td>
-                        <td>{{ budget.budgeted_amount }}</td>
-                        <td>{{ budget.actual_amount }}</td>
-                        <td>{{ budget.remaining_budget }}</td>
-                        <td>{{ budget.currency }}</td>
-                    </tr>
-                    {% endif %}
-                    
-                </tbody>
-            </table>
+<div class="container-fluid" style="min-height: 100vh;">
+    <div class="row d-flex align-items-center justify-content-center">
+        <div class="col-md-5 bg-transparent">
+            <div class="shadow p-4">
+                <img src="{% static 'images/Selection (1).jpg' %}" alt="">
+            </div>
         </div>
+        <div class="col-md-6">
+            <div class="shadow p-4">
+                <div class="carousel slide" id="budgetCarousel" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% if budgets|length > 0 %}
+                        {% for budget in budgets %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <h3>Current Month: <span>{{ current_month_name }}</span></h3><br>
+                            <h5>Budget For: <span>{{ budget.category }}</span></h5><br>
+                            <p>Budgeted Amount: <span>{{ budget.budgeted_amount|intcomma }}</span></p>
+                            <p>Actual Expenses: <span>{{ budget.actual_amount|intcomma }}</span></p>
+                            <p>Remaining Amount: <span>{{ budget.remaining_budget|intcomma }}</span></p>
+                            <p>Date Created: <span>{{ budget.date_created|date:"Y-m-d" }}</span></p>
+                            {% if budget.remaining_budget < 0 %}
+                            <p class="text-danger">You have exceeded your budget for {{ budget.category }} <span class="emoji">&#128546;</span></p>
+                            {% endif %}
+                            {% if budget.remaining_budget > 0 %}
+                            <p class="text-success">You are within your budget for {{ budget.category }} <span class="emoji">&#128526;</span></p>
+                            {% endif %}
+                            {% if budget.remaining_budget == 0 %}
+                            <p class="text-warning">You have used your entire budget for {{ budget.category }} <span class="emoji">💔</span></p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="carousel-item active">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">No Budgets Available</h5>
+                                    <p class="card-text">Please add your budgets to see the details.</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#budgetCarousel" data-bs-slide="prev">
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#budgetCarousel" data-bs-slide="next">
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
-    
-</div>
 
 {% endblock %}

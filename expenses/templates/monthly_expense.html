@@ -74,6 +74,7 @@
         { background: 'rgba(75, 192, 192, 1)', border: 'rgba(75, 192, 192, 1)' }, // Teal
         { background: 'rgba(153, 102, 255, 1)', border: 'rgba(153, 102, 255, 1)' }, // Purple
         { background: 'rgba(255, 159, 64, 1)', border: 'rgba(255, 159, 64, 1)' }, // Orange
+        { background: 'rgba(201, 203, 207, 1)', border: 'rgba(201, 203, 207, 1)' } // Grey
     ];
 
     // Prepare datasets for each category
@@ -120,11 +121,22 @@
             easing: 'easeInOutBounce' // Easing function for the animation
         },
         scales: {
-            y: {
-                beginAtZero: true
+            x: {
+                    ticks: {
+                        color: '#FFFFFF', // Change X-axis label (title) color here
+                        font: {
+                            weight: '200',
+                            size: 10
+                        }
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: '#FFFFFF' // Change Y-axis label color if desired
+                    }
+                }
             }
         }
-    }
     });
 </script>
 

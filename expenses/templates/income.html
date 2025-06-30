@@ -2,7 +2,8 @@
 {% load static %}
 {% load humanize %}
 {% block content %}
-<div class="container-fluid" id="reg1">
+
+<div class="container-fluid" >
     <div class="row d-flex align-items-center justify-content-center" style="min-height: 100vh;">
         <div class="col-md-4 bg-transparent">
             <div class="shadow p-4">
@@ -29,7 +30,9 @@
                         <option value="Other">Other</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Add Income</button>
+                <div id="reg1">
+                    <button type="submit" class="btn btn-primary">Add Income</button>
+                </div>
             </form>
             {% if message %}
                 <div class="alert alert-success mt-3" role="alert">
@@ -44,47 +47,32 @@
             </div>
         </div>
         <div class="col-md-6">
-            {% if income > 0%}
-            <div class="card bg-transparent">
-                <div class="card-body">
-                    <!-- Add this inside your <div class="card-body">, replacing the Total Income display -->
-                    <h3 class="card-title">Total Income: <span id="totalIncomeValue">{{ total_income|intcomma }}</span></h3>
-                    <input type="range" min="0" max="{{ total_income|floatformat:0 }}" value="{{ total_income|floatformat:0 }}" class="form-range w-100" id="totalIncomeSlider" disabled>
-                    
+            <div class="shadow p-4">
+                <div id="incomeSlider" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% if monthly_income %}
+                            {% for inc in monthly_income %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <h4>{{ current_month_name }} Income</h4>
+                                <p>Income Entries: <span>{{ forloop.counter }}</span></p>
+                                <p>Amount: <span>{{ inc.amount|intcomma }}</span></p>
+                                <p>Income Source: <span>{{ inc.source }}</span></p>
+                                <p>Date: <span>{{ inc.date }}</span></p>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <h4>No Income Recorded for {{ current_month_name }}</h4>
+                            <p>Please add your income details to track your finances.</p>
+                        {% endif %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#incomeSlider" data-bs-slide="prev">
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#incomeSlider" data-bs-slide="next">
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-            </div>
-            {% else %}
-            <div class="card bg-transparent">
-                <div class="card-body">
-                    <h3 class="card-title"> No income recorded</h3>
-                    <p>Please add your income details to track your finances.</p>
-                </div>
-            </div>
-            {% endif %}
+            </div>    
         </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Optionally, animate the slider if you want to show a dynamic effect
-    const slider = document.getElementById('totalIncomeSlider');
-    const valueSpan = document.getElementById('totalIncomeValue');
-    const max = parseInt(slider.max);
-    let current = 0;
-    if (slider && valueSpan) {
-        const interval = setInterval(() => {
-            if (current < max) {
-                current += Math.ceil(max / 100); // Reduce speed: increase denominator
-                if (current > max) current = max;
-                slider.value = current;
-                valueSpan.textContent = current.toLocaleString();
-            } else {
-                clearInterval(interval);
-            }
-        }, 20); // Increase interval time for slower animation
-    }
-});
-</script>
-
     </div>
-</div>
 {% endblock %}

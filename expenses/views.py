@@ -27,6 +27,8 @@ from django.http import HttpResponse
 from django.core.management import call_command
 from django.http import HttpResponse
 import os
+from collections import defaultdict
+import calendar
 
 def create_admin(request):
     User = get_user_model()
@@ -107,6 +109,12 @@ def custom_logout(request):
 
 @login_required
 def index(request):
+    # Fetch monthly expenses grouped by title
+    user = request.user
+    today = timezone.now().date()
+    current_month = today.month
+    current_year = today.year
+    days_in_month = calendar.monthrange(current_year, current_month)[1]  # Get the number of days in the current month
     if request.method == 'POST':
         # Handle form submission
         title = request.POST.get('title')
@@ -177,47 +185,53 @@ def index(request):
     total_income = IncomeManagement.objects.filter(user=request.user).aggregate(Sum('amount'))['amount__sum'] or 0
     
     # Calculate net savings
-    net_savings = total_income - total_expenses
-    
     # Fetch all budgets for the logged-in user
-    budgets = Budget.objects.filter(user=request.user)
-    for budget in budgets:
+    today = timezone.now().date()
+    current_month = today.month
+    current_year = today.year
+    monthly_budgets = Budget.objects.filter(
+        user=request.user,
+        date_created__month=current_month,
+        date_created__year=current_year
+    )
+    # print(f"Monthly Budgets: {monthly_budgets}")
+
+    for budget in monthly_budgets:
         actual_expenses = ExpenseManagement.objects.filter(
             user=request.user, category=budget.category
         ).aggregate(Sum('amount'))['amount__sum'] or 0
         budget.actual_amount = actual_expenses
         budget.remaining_budget = budget.budgeted_amount - actual_expenses
+        # if not budget.half_alert_sent and Decimal(actual_expenses) >= Decimal('0.5') * budget.budgeted_amount:
+        #     send_mail(
+        #         subject='Budget 50% Reached Alert',
+        #         message=(
+        #             f'Dear {request.user.username},\n\n'
+        #             f'You have used 50% of your budget for "{budget.category}".\n'
+        #             f'Your budgeted amount is {intcomma(budget.budgeted_amount)}, and you have spent {intcomma(actual_expenses)}.\n\n'
+        #             f'Please review your expenses to stay on track.\n\n'
+        #             f'Thank you,\nExpense Tracker Team'
+        #         ),
+        #         from_email='cecibarasa@gmail.com',
+        #         recipient_list=[request.user.email],
+        #         fail_silently=False,
+        #     )
+        #     budget.half_alert_sent = True
+        budget.save()
 
-        # 50% alert logic (fix: use Decimal('0.5'))
-        if not budget.half_alert_sent and Decimal(actual_expenses) >= Decimal('0.5') * budget.budgeted_amount:
-            send_mail(
-                subject='Budget 50% Reached Alert',
-                message=(
-                    f'Dear {request.user.username},\n\n'
-                    f'You have used 50% of your budget for "{budget.category}".\n'
-                    f'Your budgeted amount is {intcomma(budget.budgeted_amount)}, and you have spent {intcomma(actual_expenses)}.\n\n'
-                    f'Please review your expenses to stay on track.\n\n'
-                    f'Thank you,\nExpense Tracker Team'
-                ),
-                from_email='cecibarasa@gmail.com',
-                recipient_list=[request.user.email],
-                fail_silently=False,
-            )
-            budget.half_alert_sent = True
-            budget.save()
-    
-    # Fetch monthly expenses grouped by title
-    today = timezone.now().date()
-    current_month = today.month
-    current_year = today.year
-
-    # Filter budgets for the current month
-    monthly_budgets = Budget.objects.filter(
+    # Filter income for the current month
+    monthly_income = IncomeManagement.objects.filter(
         user=request.user,
-        # created_at__month=current_month,
-        # created_at__year=current_year
-    )
-    
+        date__month=current_month,
+        date__year=current_year
+    ).order_by('date')
+    total_monthly_income = monthly_income.aggregate(Sum('amount'))['amount__sum'] or 0
+    # remaining_income = total_monthly_income - actual_expenses
+    # print("Monthly income:", monthly_income)
+    # print("Total monthly income:", total_monthly_income)
+
+    remaining_income = total_monthly_income - total_expenses
+
     # Fetch expenses for the selected month
     monthly_expenses = ExpenseManagement.objects.filter(
         user=request.user,
@@ -231,20 +245,32 @@ def index(request):
     # print(f"Monthly Expenses: {monthly_expenses}")
 
     # Prepare data for the bar graph
-    expenses_by_category = (
-        monthly_expenses.values('category')
-        .annotate(total_amount=Sum('amount'))
-        .order_by('category')
-    )
-    categories = [e['category'] for e in expenses_by_category]
-    category_data = [float(e['total_amount']) for e in expenses_by_category]
+    expenses_by_title = defaultdict(lambda: [0]*days_in_month)
+    for expense in monthly_expenses:
+        day = expense.date.day - 1  # 0-based index
+        expenses_by_title[expense.title][day] += float(expense.amount)
 
+    datasets = []
+    for title, data in expenses_by_title.items():
+        datasets.append({
+            'label': title,
+            'data': data,
+            'color': f'rgba({random.randint(0, 255)}, {random.randint(0, 255)}, {random.randint(0, 255)}, 0.5)',
+            # Optionally add color, etc.
+        })
+
+    labels = list(range(1, days_in_month + 1))  # <-- Add this line here
+
+    context = {
+        'labels': json.dumps(labels),
+        'datasets': json.dumps(datasets),
+        # ...other context...
+    }
+    
+    categories = [str(title) for title in expenses_by_title.keys()]
+    category_data = [sum(amounts) for amounts in expenses_by_title.values()]
     # Calculate total amount for each category
     total_amount = 0
-    for expense in monthly_expenses:
-        category = expense['title']
-        total_amount += float(expense['total_amount'])  # Convert Decimal to float and accumulate
-        category_data[category] = float(expense['total_amount'])  # Convert Decimal to float
 
     # Generate random colors for each category
     category_colors = {
@@ -267,16 +293,22 @@ def index(request):
         'has_expenses_today': has_expenses_today,
         'selected_month_name': today.strftime('%B'),
         'total_expenses': total_expenses,
+        'labels': json.dumps(labels),
+        'datasets': json.dumps(datasets),
         'categories': json.dumps(categories),
         'category_data': json.dumps(category_data),
         'category_colors': json.dumps(category_colors),
+        'monthly_income': monthly_income,
+        'total_monthly_income': total_monthly_income,
+        'current_month_name': today.strftime('%B'),
         'monthly_expenses': monthly_expenses,
         'total_expenses': total_expenses,
         'total_income': total_income,
         'net_savings': net_savings,
-        'budgets': monthly_budgets,
+        'monthly_budgets': monthly_budgets,
         # 'budgets': budgets,
         'income': income,
+        'remaining_income': remaining_income,
     })
 
 def search_expenses(request):
@@ -321,20 +353,37 @@ def add_expense(request):
 @login_required
 def view_expenses(request):
     user = request.user
+    today = timezone.now().date()
+    current_month = today.month
+    current_year = today.year
+    days_in_month = calendar.monthrange(current_year, current_month)[1]
+    weeks_in_month = (days_in_month + 6) // 7  # Round up to include partial weeks
 
     # Fetch all expenses for the logged-in user
-    expenses = ExpenseManagement.objects.filter(user=request.user).order_by('-date')
-
+    expenses_qs = ExpenseManagement.objects.filter(user=request.user)
+    most_recent_expense = expenses_qs.order_by('-date').first()
+    highest_expense = expenses_qs.order_by('-amount').first()
+    lowest_expense = expenses_qs.order_by('amount').first()
+    average_expense = expenses_qs.aggregate(average=Sum('amount') / expenses_qs.count())['average'] if expenses_qs.count() > 0 else 0
+    total_expenses = expenses_qs.aggregate(Sum('amount'))['amount__sum'] or 0
     # Calculate total expenses
-    total_expenses = expenses.aggregate(Sum('amount'))['amount__sum'] or 0
+    total_expenses = expenses_qs.aggregate(Sum('amount'))['amount__sum'] or 0
+    average_expense_per_week = total_expenses / weeks_in_month if weeks_in_month else 0
 
     #display year
     current_year = datetime.now().year  # Get the current year
 
     return render(request, 'view_expenses.html', {
-        'expenses': expenses,
+        'expense': most_recent_expense,
+        'highest_expense': highest_expense,
+        'lowest_expense': lowest_expense,
+        'average_expense': average_expense,
         'total_expenses': total_expenses,
-        'year': current_year,  # Pass the year to the template
+        'current_month_name': datetime.now().strftime('%B'),
+        'current_month': datetime.now().month,
+        'current_year': current_year,
+        'year': current_year,
+        'average_expense_per_week': average_expense_per_week,
     })
 
 @login_required
@@ -434,12 +483,24 @@ def income(request):
         return redirect('income')
 
     # Fetch all incomes for the logged-in user
+    today = timezone.now().date()
+    current_month = today.month
+    current_year = today.year
+    monthly_income = IncomeManagement.objects.filter(
+        user=request.user,
+        date__month=current_month,
+        date__year=current_year
+    ).order_by('date')
+    total_monthly_income = monthly_income.aggregate(Sum('amount'))['amount__sum'] or 0
     income = IncomeManagement.objects.filter(user=request.user)
     total_income = income.aggregate(Sum('amount'))['amount__sum'] or 0
 
     return render(request, 'income.html', {
         'income': income,
         'total_income': total_income,
+        'monthly_income': monthly_income,
+        'total_monthly_income': total_monthly_income,
+        'current_month_name': today.strftime('%B'),
     })
 
 @login_required
@@ -448,6 +509,7 @@ def add_budget(request):
         category = request.POST.get('category')  # Correctly retrieve the category
         budgeted_amount = request.POST.get('budgeted_amount')
         currency = request.POST.get('currency')
+        date_created = now().date()  # Get today's date
 
         # Validate currency
         valid_currencies = ['USD', 'KES', 'EUR', 'GBP', 'INR']
@@ -462,7 +524,8 @@ def add_budget(request):
             user=request.user,
             category=category,
             budgeted_amount=budgeted_amount,
-            currency=currency
+            currency=currency,
+            date_created=date_created,
         )
         return redirect('budget')
     
@@ -470,6 +533,11 @@ def add_budget(request):
 
 @login_required
 def budget(request):
+    user = request.user
+    today = timezone.now().date()
+    current_month = today.month
+    current_year = today.year
+    days_in_month = calendar.monthrange(current_year, current_month)[1]  # Get the number of days in the current month
     # Fetch budgets and calculate actual expenses
     budgets = Budget.objects.filter(user=request.user)
     for budget in budgets:
@@ -478,8 +546,19 @@ def budget(request):
         ).aggregate(Sum('amount'))['amount__sum'] or 0
         budget.actual_amount = actual_expenses
         budget.remaining_budget = budget.budgeted_amount - actual_expenses
+        budget.total = budget.budgeted_amount + budget.remaining_budget
 
-    return render(request, 'budget.html', {'budgets': budgets})
+    return render(request, 'budget.html', {
+        'budgets': budgets, 
+        'total_budgeted': sum(b.budgeted_amount for b in budgets),
+        'total_actual': sum(b.actual_amount for b in budgets),
+        'total_remaining': sum(b.remaining_budget for b in budgets),
+        'total': sum(b.total for b in budgets),
+        'current_month_name': today.strftime('%B'),
+        'current_month': current_month,
+        'current_year': current_year,
+        'days_in_month': days_in_month,
+    })
 
 @login_required
 def monthly_expense_report(request):

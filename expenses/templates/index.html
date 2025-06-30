@@ -5,22 +5,20 @@
 
 
 <div class="container-fluid">
-    
     <!-- Display Current Expense -->
     <div class="row d-flex justify-content-center">
         <div class="col-md-4 ">
         <div id="expenseSlider" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-                {% if budgets > 0 %}
-                    <h3>Budget for {{ selected_month_name }}</h3>
-                {% for budget in budgets %}
+                {% if monthly_budgets %}
+                {% for budget in monthly_budgets %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Budget for {{ budget.category }}</h5>
                             <p class="card-text">Budgeted Amount: <span>{{ budget.budgeted_amount|intcomma }}</span></p>
                             <p class="card-text">Amount Spent: <span>{{ budget.actual_amount|intcomma }}</span></p>
-                            <p class="card-text">Remaining Budget: <span>{{ budget.remaining_budget|intcomma }}</span></p>
+                            <p class="card-text">Amount Remaining: <span>{{ budget.remaining_budget|intcomma }}</span></p>
                             {% if budget.remaining_budget < 0 %}
                             <p class="card-text text-danger">You have exceeded your budget for {{ budget.category }} <span class="emoji">&#128546;</span></p>
                             {% endif %}
@@ -73,35 +71,41 @@
         {% endif %} -->
         
         <div class="col-md-4">
-            <div class="card">
-                {% if income > 0 %}
-                <div class="card-header">
-                    <h3>Current Income {{ selected_month_name }} Income</h3>
+    <div id="incomeSlider" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% if monthly_income %}
+                {% for inc in monthly_income %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ current_month_name }} Income</h5>
+                            <p class="card-text">Date: <span>{{ inc.date }}</span></p>
+                            <p class="card-text">Source: <span>{{ inc.source }}</span></p>
+                            <p class="card-text">Amount: <span>{{ inc.amount|intcomma }}</span></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    {% for income in income %}
-                    {% if selected_month_name %}
-                    <h5 class="card-title"> {{ selected_month_name }} Income</h5>
-                    {% endif %}
-                    <p class="card-text">Total Income: <span>{{ currencyy }}{{ total_income|intcomma }}</span></p>
-                    <p class="card-text">Total Expenses: <span>{{ total_expenses|intcomma }}</span></p>
-                    <p class="card-text">Amount remaining: <span>{{ net_savings|intcomma }}</span></p>
-                    {% endfor %}
-                    {% if income|length == 0 %}
-                    <p colspan="5" class="card-text">No income available.</p>
-                    <button class="btn btn-primary" onclick="location.href='{% url "income" %}'">Add Income</button>
-                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="carousel-item active">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">No Income Recorded for {{ current_month_name }}</h4>
+                            <p>Please add your income details to track your finances.</p>
+                            <button class="btn btn-primary" onclick="location.href='{% url "income" %}'">Add Income</button>
+                        </div>
+                    </div>
                 </div>
-                {% else %}
-                <div class="card-header">
-                    <h4>No Income Recorded for {{ selected_month_name }}</h4>
-                    <p>Please add your income details to track your finances.</p>
-                    <button class="btn btn-primary" onclick="location.href='{% url "income" %}'">Add Income</button>
-                </div>
-            </div>
+            {% endif %}
         </div>
-        {% endif %}
+        <button class="carousel-control-prev" type="button" data-bs-target="#incomeSlider" data-bs-slide="prev">
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#incomeSlider" data-bs-slide="next">
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
+</div>
     <!-- Display Monthly Report -->
     <div class="row d-flex justify-content-center">
         <div class="col-md-9">
@@ -129,33 +133,41 @@
 <!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    const categories = JSON.parse('{{ categories|escapejs }}'); // Categories
+    const categoryData = JSON.parse('{{ category_data|escapejs }}'); // Category data
     const ctx = document.getElementById('monthlyExpenseChart').getContext('2d');
 
     // Parse data passed from the view
-    const categories = JSON.parse('{{ categories|escapejs }}'); // Categories
-    const categoryData = JSON.parse('{{ category_data|escapejs }}'); // Category data
     const categoryColors = [
-        { background: 'rgba(255, 99, 132, 0.7)', border: 'rgba(255, 99, 132, 1)' }, // Red
-        { background: 'rgba(54, 162, 235, 0.7)', border: 'rgba(54, 162, 235, 1)' }, // Blue
-        { background: 'rgba(255, 206, 86, 0.7)', border: 'rgba(255, 206, 86, 1)' }, // Yellow
-        { background: 'rgba(75, 192, 192, 0.7)', border: 'rgba(75, 192, 192, 1)' }, // Teal
-        { background: 'rgba(153, 102, 255, 0.7)', border: 'rgba(153, 102, 255, 1)' }, // Purple
-        { background: 'rgba(255, 159, 64, 0.7)', border: 'rgba(255, 159, 64, 1)' }, // Orange
+        { background: 'rgba(255, 99, 132, 1)', border: 'rgba(255, 99, 132, 1)' }, // Red
+        { background: 'rgba(54, 162, 235, 1)', border: 'rgba(54, 162, 235, 1)' }, // Blue
+        { background: 'rgba(255, 206, 86, 1)', border: 'rgba(255, 206, 86, 1)' }, // Yellow
+        { background: 'rgba(75, 192, 192, 1)', border: 'rgba(75, 192, 192, 1)' }, // Teal
+        { background: 'rgba(153, 102, 255, 1)', border: 'rgba(153, 102, 255, 1)' }, // Purple
+        { background: 'rgba(255, 159, 64, 1)', border: 'rgba(255, 159, 64, 1)' }, // Orange
+        { background: 'rgba(201, 203, 207, 1)', border: 'rgba(201, 203, 207, 1)' }, // Grey
+        { background: 'rgba(255, 99, 132, 0.2)', border: 'rgba(255, 99, 132, 0.2)' }, // Light Red
+        { background: 'rgba(54, 162, 235, 0.2)', border: 'rgba(54, 162, 235, 0.2)' }, // Light Blue
+        { background: 'rgba(255, 206, 86, 0.2)', border: 'rgba(255, 206,86 ,0.2)' }, // Light Yellow
+        { background: 'rgba(255, 206, 86, 1)', border: 'rgba(255, 206, 86, 1)' }, // Yellow
+        { background: 'rgba(75, 192, 192, 1)', border: 'rgba(75, 192, 192, 1)' }, // Teal
+        { background: 'rgba(153, 102, 255, 1)', border: 'rgba(153, 102, 255, 1)' }, // Purple
+        { background: 'rgba(255, 159, 64, 1)', border: 'rgba(255, 159, 64, 1)' }, // Orange
     ]; // Category colors
 
     // Prepare datasets for each category
     const datasets = [{
         label: 'Expenses',
         data: Object.values(categoryData), // Data for each category
-        backgroundColor: Object.values(categoryColors).map(color => color.background), // Background colors
-        borderColor: Object.values(categoryColors).map(color => color.border), // Border colors
+        backgroundColor: categoryColors.map(color => color.background), // Background colors
+        borderColor: categoryColors.map(color => color.border), // Border colors
         borderWidth: 1
     }];
 
     const monthlyExpenseChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'bar', // Change to 'bar' if you want a bar chart
         data: {
-            labels: Object.keys(categoryData), // Category names
+            labels: categories, // This should be the titles as strings
             datasets: datasets
         },
         options: {
@@ -165,13 +177,28 @@
                     position: 'top',
                 },
                 title: {
-                    display: true,
-                    text: 'Expenses by Title'
+                display: true,
+                text: 'Expenses by Title',
+                color: '#f9f9f9', // <-- Add your desired color here (e.g., orange)
+                font: {
+                    size: 20 // Optional: change title font size
                 }
             },
+            },
             scales: {
+                x: {
+                    ticks: {
+                        color: '#FFFFFF', // Change X-axis label (title) color here
+                        font: {
+                            weight: '200',
+                            size: 10
+                        }
+                    }
+                },
                 y: {
-                    beginAtZero: true
+                    ticks: {
+                        color: '#FFFFFF' // Change Y-axis label color if desired
+                    }
                 }
             }
         }
