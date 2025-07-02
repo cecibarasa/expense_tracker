@@ -15,7 +15,7 @@
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Budget for {{ budget.category }}</h5>
+                            <h5 class="card-title">Budget for {{ budget.category }} <span>{{ current_month_name }}</span></h5>
                             <p class="card-text">Budgeted Amount: <span>{{ budget.budgeted_amount|intcomma }}</span></p>
                             <p class="card-text">Amount Spent: <span>{{ budget.actual_amount|intcomma }}</span></p>
                             <p class="card-text">Amount Remaining: <span>{{ budget.remaining_budget|intcomma }}</span></p>

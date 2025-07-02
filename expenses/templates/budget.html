@@ -9,13 +9,13 @@
 
 <div class="container-fluid" style="min-height: 100vh;">
     <div class="row d-flex align-items-center justify-content-center">
-        <div class="col-md-5 bg-transparent">
-            <div class="shadow p-4">
-                <img src="{% static 'images/Selection (1).jpg' %}" alt="">
+        <div class="col-12 col-md-5 mb-4">
+            <div class="shadow p-4 h-100">
+                <img src="{% static 'images/Selection (1).jpg' %}" alt="" class="img-fluid rounded" style="width: 100%; height: auto;">
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="shadow p-4">
+        <div class="col-12 col-md-6 mb-4">
+            <div class="shadow p-4 h-100">
                 <div class="carousel slide" id="budgetCarousel" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         {% if budgets|length > 0 %}
@@ -29,11 +29,9 @@
                             <p>Date Created: <span>{{ budget.date_created|date:"Y-m-d" }}</span></p>
                             {% if budget.remaining_budget < 0 %}
                             <p class="text-danger">You have exceeded your budget for {{ budget.category }} <span class="emoji">&#128546;</span></p>
-                            {% endif %}
-                            {% if budget.remaining_budget > 0 %}
+                            {% elif budget.remaining_budget > 0 %}
                             <p class="text-success">You are within your budget for {{ budget.category }} <span class="emoji">&#128526;</span></p>
-                            {% endif %}
-                            {% if budget.remaining_budget == 0 %}
+                            {% else %}
                             <p class="text-warning">You have used your entire budget for {{ budget.category }} <span class="emoji">💔</span></p>
                             {% endif %}
                         </div>
@@ -48,7 +46,7 @@
                             </div>
                         </div>
                         {% endif %}
-                </div>
+                    </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#budgetCarousel" data-bs-slide="prev">
                         <span class="visually-hidden">Previous</span>
                     </button>
@@ -58,7 +56,7 @@
                 </div>
             </div>
         </div>
-
     </div>
+</div>
 
 {% endblock %}

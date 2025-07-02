@@ -14,12 +14,46 @@
         </div>
     <div class="col-md-6">        
             <div class="shadow p-4">
-                {% if expense %}
-                    <h2>Monthly Expenses for {{ current_month_name }}</h2>
+                {% if monthly_expenses %}
+                    <h2>Expenses for {{ current_month_name }}</h2>
                     <p>Total Expenses: <span>{{ total_expenses|intcomma }}</span></p>
                     <p>Average Weekly Expense: <span>{{ average_expense_per_week|intcomma }}</span></p>
                     <p>Highest Expense: <span>{{ highest_expense.amount|intcomma }} on {{ highest_expense.title }}</span></p>
                     <p>Lowest Expense: <span>{{ lowest_expense.amount|intcomma }} on {{ lowest_expense.title }}</span></p>
+                    <div id="expensesCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                        {% if monthly_expenses %}
+                        {% for expense in monthly_expenses %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Expenses Breakdown</h4>
+                                <h5 class="card-title">{{ expense.title }}</h5>
+                                <p class="card-text">Amount: <span> {{ expense.amount|intcomma }} {{ expense.currency }}</span></p>
+                                <p class="card-text">Category: <span> {{ expense.category }}</span></p>
+                                <p class="card-text">Date: <span>{{ expense.date }}</span></p>
+                            </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="carousel-item active">
+                            <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">No Expenses Recorded</h5>
+                                <p class="card-text">Please add your expenses to track your spending.</p>
+                            </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#expensesCarousel" data-bs-slide="prev">
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#expensesCarousel" data-bs-slide="next">
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
                 {% else %}
                     <h2>No Expenses Recorded</h2>
                     <p>Please add your expenses to see the statistics.</p>

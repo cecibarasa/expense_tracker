@@ -364,31 +364,39 @@ def view_expenses(request):
     days_in_month = calendar.monthrange(current_year, current_month)[1]
     weeks_in_month = (days_in_month + 6) // 7  # Round up to include partial weeks
 
-    # Fetch all expenses for the logged-in user
-    expenses_qs = ExpenseManagement.objects.filter(user=request.user)
-    most_recent_expense = expenses_qs.order_by('-date').first()
-    highest_expense = expenses_qs.order_by('-amount').first()
-    lowest_expense = expenses_qs.order_by('amount').first()
-    average_expense = expenses_qs.aggregate(average=Sum('amount') / expenses_qs.count())['average'] if expenses_qs.count() > 0 else 0
-    total_expenses = expenses_qs.aggregate(Sum('amount'))['amount__sum'] or 0
-    # Calculate total expenses
-    total_expenses = expenses_qs.aggregate(Sum('amount'))['amount__sum'] or 0
+    monthly_expenses = ExpenseManagement.objects.filter(
+        user=request.user,
+        date__month=current_month,
+        date__year=current_year
+    ).order_by('-date')
+
+    # ...calculate total_expenses, average_expense_per_week, highest_expense, lowest_expense...
+    total_expenses = monthly_expenses.aggregate(Sum('amount'))['amount__sum'] or 0
     average_expense_per_week = total_expenses / weeks_in_month if weeks_in_month else 0
+    highest_expense = monthly_expenses.order_by('-amount').first()
+    lowest_expense = monthly_expenses.order_by('amount').first()
+
+    # # Fetch all expenses for the logged-in user
+    # expenses_qs = ExpenseManagement.objects.filter(user=request.user)
+    # most_recent_expense = expenses_qs.order_by('-date').first()
+    # highest_expense = expenses_qs.order_by('-amount').first()
+    # lowest_expense = expenses_qs.order_by('amount').first()
+    # average_expense = expenses_qs.aggregate(average=Sum('amount') / expenses_qs.count())['average'] if expenses_qs.count() > 0 else 0
+    # total_expenses = expenses_qs.aggregate(Sum('amount'))['amount__sum'] or 0
+    # # Calculate total expenses
+    # total_expenses = expenses_qs.aggregate(Sum('amount'))['amount__sum'] or 0
+    # average_expense_per_week = total_expenses / weeks_in_month if weeks_in_month else 0
 
     #display year
     current_year = datetime.now().year  # Get the current year
 
     return render(request, 'view_expenses.html', {
-        'expense': most_recent_expense,
+        'monthly_expenses': monthly_expenses,
+        'total_expenses': total_expenses,
+        'average_expense_per_week': average_expense_per_week,
         'highest_expense': highest_expense,
         'lowest_expense': lowest_expense,
-        'average_expense': average_expense,
-        'total_expenses': total_expenses,
-        'current_month_name': datetime.now().strftime('%B'),
-        'current_month': datetime.now().month,
-        'current_year': current_year,
-        'year': current_year,
-        'average_expense_per_week': average_expense_per_week,
+        'current_month_name': today.strftime('%B'),
     })
 
 @login_required
