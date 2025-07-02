@@ -18,7 +18,7 @@ from celery.schedules import crontab
 CELERY_BEAT_SCHEDULE = {
     'daily_prompt': {
         'task': 'expenses.tasks.daily_prompt',
-        'schedule': crontab(hour=22, minute=0),  # Every day at 10 PM
+        'schedule': crontab(hour=20, minute=0),  # Every day at 8 PM
     },
 }
 
