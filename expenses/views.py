@@ -30,6 +30,7 @@ import os
 from collections import defaultdict
 import calendar
 
+
 def create_admin(request):
     User = get_user_model()
     username = os.environ.get('DJANGO_SUPERUSER_USERNAME')
@@ -106,6 +107,7 @@ def register(request):
 def custom_logout(request):
     logout(request)  # Log out the user
     return render(request, 'logout.html', {'hide_navbar': True})  # Render the logout page with the message
+
 
 @login_required
 def index(request):
@@ -198,7 +200,10 @@ def index(request):
 
     for budget in monthly_budgets:
         actual_expenses = ExpenseManagement.objects.filter(
-            user=request.user, category=budget.category
+            user=request.user,
+            category=budget.category,
+            date__month=current_month,
+            date__year=current_year
         ).aggregate(Sum('amount'))['amount__sum'] or 0
         budget.actual_amount = actual_expenses
         budget.remaining_budget = budget.budgeted_amount - actual_expenses

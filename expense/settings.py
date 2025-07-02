@@ -13,9 +13,22 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 from decouple import config
 import dj_database_url
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'daily_prompt': {
+        'task': 'expenses.tasks.daily_prompt',
+        'schedule': crontab(hour=22, minute=0),  # Every day at 10 PM
+    },
+}
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TIMEZONE = 'Africa/Nairobi'
+
 
 DATABASES = {
-    'default': dj_database_url.parse('postgresql://postgres.cqbsqhamesbipuevodgt:cOmIFZUX1AABt47o@aws-0-eu-west-2.pooler.supabase.com:6543/postgres')
+    'default': dj_database_url.parse('DATABSE_URL')
 }
 
 OPTIONS = {
@@ -30,8 +43,10 @@ EMAIL_HOST = config('EMAIL_HOST', default='')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 # ...existing code...
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 SECRET_KEY = config('SECRET_KEY')
@@ -66,7 +81,7 @@ INSTALLED_APPS = [
     'expenses',
     'bootstrap4',
     'django.contrib.humanize',
-    
+    'django_celery_beat',
     # 'fontawesome',
 ]
 
