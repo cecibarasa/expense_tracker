@@ -22,8 +22,8 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'rediss://default:Adb1AAIjcDFhYTEwNTgxOWI3NzA0YmQ5OWNjYWI1MmFlNmM2NmJkNXAxMA@ethical-jackass-55029.upstash.io:6379'
+CELERY_RESULT_BACKEND = 'rediss://default:Adb1AAIjcDFhYTEwNTgxOWI3NzA0YmQ5OWNjYWI1MmFlNmM2NmJkNXAxMA@ethical-jackass-55029.upstash.io:6379'
 CELERY_TIMEZONE = 'Africa/Nairobi'
 
 

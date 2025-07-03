@@ -13,7 +13,7 @@ def daily_prompt():
                 message=(
                     f"Hello {user.username},\n\n"
                     "Did you spend anything today? If yes, please log in and record your expenses: "
-                    "http://localhost:8000/add_expense/\n\n"
+                    "https://expense-tracker-k4xy.onrender.com/add_expense/\n\n"
                     "Thank you for using Expense Tracker!"
                 ),
                 from_email="cecibarasa@gmail.com",
