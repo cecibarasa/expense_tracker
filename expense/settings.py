@@ -27,9 +27,9 @@ CELERY_RESULT_BACKEND = 'rediss://default:Adb1AAIjcDFhYTEwNTgxOWI3NzA0YmQ5OWNjYW
 CELERY_TIMEZONE = 'Africa/Nairobi'
 
 
-# DATABASES = {
-#     'default': dj_database_url.parse(config('DATABASE_URL'))
-# }
+DATABASES = {
+    'default': dj_database_url.parse(config('DATABASE_URL'))
+}
 
 OPTIONS = {
     'options': '-c listen_addresses=localhost'
@@ -122,16 +122,16 @@ WSGI_APPLICATION = 'expense.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {  # Add the 'default' key
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres.cqbsqhamesbipuevodgt',
-        'PASSWORD': 'cOmIFZUX1AABt47o',
-        'HOST': 'aws-0-eu-west-2.pooler.supabase.com',
-        'PORT': '6543',
-    }
-}
+# DATABASES = {
+#     'default': {  # Add the 'default' key
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres.cqbsqhamesbipuevodgt',
+#         'PASSWORD': 'cOmIFZUX1AABt47o',
+#         'HOST': 'aws-0-eu-west-2.pooler.supabase.com',
+#         'PORT': '6543',
+#     }
+# }
 
 
 # Password validation
