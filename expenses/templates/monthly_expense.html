@@ -4,7 +4,7 @@
 {% load humanize %}
 {% block content %}
 
-<div class="container-fluid" style="min-height: 100vh;">
+<div class="container-fluid justify-content-center">
     <h2>Monthly Expense Report</h2>
 
     <!-- Form to Select Month -->
@@ -47,7 +47,7 @@
 
     
     <!-- Bar Graph -->
-    <canvas id="monthlyExpenseChart"  class="bg-transparent" style="min-height: 100vh;"></canvas>
+    <canvas id="monthlyExpenseChart"  class="bg-transparent"></canvas>
 </div>
 
 <!-- Include Chart.js -->
@@ -93,7 +93,7 @@
             datasets: datasets
         },
         options: {
-        responsive: true,
+        responsive: false,
         plugins: {
             legend: {
                 position: 'center',
