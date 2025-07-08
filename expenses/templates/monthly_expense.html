@@ -6,7 +6,6 @@
 
 <div class="container-fluid justify-content-center">
     <h2>Monthly Expense Report</h2>
-
     <!-- Form to Select Month -->
     <form method="POST" class="mb-4">
         {% csrf_token %}
@@ -47,7 +46,7 @@
 
     
     <!-- Bar Graph -->
-    <canvas id="monthlyExpenseChart"  class="bg-transparent"></canvas>
+    <canvas id="monthlyExpenseChart"  class="bg-transparent" style="min-height: 100vh;"></canvas>
 </div>
 
 <!-- Include Chart.js -->
@@ -93,7 +92,7 @@
             datasets: datasets
         },
         options: {
-        responsive: false,
+        responsive: true,
         plugins: {
             legend: {
                 position: 'center',
