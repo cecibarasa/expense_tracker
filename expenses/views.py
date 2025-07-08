@@ -230,12 +230,12 @@ def index(request):
         date__month=current_month,
         date__year=current_year
     ).order_by('date')
-    total_monthly_income = monthly_income.aggregate(Sum('amount'))['amount__sum'] or 0
-    # remaining_income = total_monthly_income - actual_expenses
-    # print("Monthly income:", monthly_income)
-    # print("Total monthly income:", total_monthly_income)
-
-    remaining_income = total_monthly_income - total_expenses
+    # Calculate total income for the current month
+    total_monthly_income = IncomeManagement.objects.filter(
+        user=user,
+        date__month=current_month,
+        date__year=current_year
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
 
     # Fetch expenses for the selected month
     monthly_expenses = ExpenseManagement.objects.filter(
@@ -244,6 +244,7 @@ def index(request):
         date__year=current_year
     )
     total_expenses = monthly_expenses.aggregate(Sum('amount'))['amount__sum'] or 0
+    remaining_income = total_monthly_income - total_expenses
 
     # Debugging output
     # print(f"Selected Month: {selected_month}")
