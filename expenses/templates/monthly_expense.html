@@ -4,14 +4,14 @@
 {% load humanize %}
 {% block content %}
 
-<div class="container-fluid justify-content-center" style="min-height: 100vh;">
+<div class="container-fluid py-4" style="min-height: 100vh;">
     <h2>Monthly Expense Report</h2>
 
     <!-- Form to Select Month -->
     <form method="POST" class="mb-4">
         {% csrf_token %}
         <div class="form-row">
-            <div class="col">
+            <div class="col-2 col-md-8">
                 <label for="month">Select Month</label>
                 <select  id="month" name="month" required>
                     <option value="1">January</option>
@@ -93,7 +93,7 @@
             datasets: datasets
         },
         options: {
-        responsive: false,
+        responsive: true,
         plugins: {
             legend: {
                 position: 'center',
