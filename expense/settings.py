@@ -125,24 +125,13 @@ WSGI_APPLICATION = 'expense.wsgi.application'
 DATABASES = {
     'default': {  # Add the 'default' key
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'expense',
-        'USER': 'nabalayo',
-        'PASSWORD': config('DB_PASSWORD', default='cOmIFZUX1AABt47o'),
-        'HOST': config('DB_HOST', default='aws-0-eu-west-2.pooler.supabase.com'),
-        'PORT': config('DB_PORT', default='6543'),
+        'NAME': 'postgres',
+        'USER': 'postgres.cqbsqhamesbipuevodgt',
+        'PASSWORD': 'cOmIFZUX1AABt47o',
+        'HOST': 'aws-0-eu-west-2.pooler.supabase.com',
+        'PORT': '6543',
     }
-}   
-
-# DATABASES = {
-#     'default': {  # Add the 'default' key
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'postgres',
-#         'USER': 'postgres.cqbsqhamesbipuevodgt',
-#         'PASSWORD': 'cOmIFZUX1AABt47o',
-#         'HOST': 'aws-0-eu-west-2.pooler.supabase.com',
-#         'PORT': '6543',
-#     }
-# }
+}
 
 
 # Password validation
